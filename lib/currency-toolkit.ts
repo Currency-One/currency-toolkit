@@ -2,23 +2,25 @@ import BigNumber from 'bignumber.js'
 
 /**
  * Currency Toolkit
+ *
+ * `CurrencyValue` - value in format like `100 PLN`, `123.45 EUR`
  */
 const C = {
   /**
    * Tries to parse given value into BigNumber. If fails, returns undefined.
-   * @param {any} value - value to parse.
+   * @param {any} value - value to parse
    * @returns {BigNumber | undefined}
    */
   tryParse: (value: any): BigNumber | undefined => (!value || isNaN(value) ? undefined : C.$(value)),
   /**
    * Checks if given value is Number.
-   * @param {any} value - value to check.
+   * @param {any} value - value to check
    * @returns {boolean}
    */
   isNumber: (value: any): boolean => Object.prototype.toString.call(value) === '[object Number]',
   /**
-   * Returns currency from given value. If no value, returns empty string.
-   * @param {string} amount - value in format `100.00 PLN`.
+   * Returns currency from given `CurrencyValue`. If no value, returns empty string.
+   * @param {string} amount - `CurrencyValue`
    * @returns {string}
    */
   $c: (amount: string): string => {
@@ -26,29 +28,41 @@ const C = {
     return i < 0 ? '' : amount.substr(i + 1)
   },
   /**
-   * Formats given value into this format `100.00 PLN`
-   * @param {string} amount - value in format `100 PLN`.
+   * Formats given `CurrencyValue` into this format `100.00 PLN`
+   * @param {string} amount - `CurrencyValue`
    * @returns {string}
    */
   format00: (amount: string): string => `${C.$(amount).toFixed(2)} ${C.$c(amount)}`.trim(),
   /**
-   * Formats given value into this format `100.00`
-   * @param {string} amount - value in format `100 PLN`.
+   * Formats given `CurrencyValue` into this format `100.00`
+   * @param {string} amount - `CurrencyValue`
    * @returns {string}
    */
   value00: (amount: string): string => C.$(amount).toFixed(2),
   /**
-   * Returns BigNumber object from given value
-   * @param {string} arg - value in format `100 PLN`.
+   * Returns BigNumber object from given `CurrencyValue`
+   * @param {string} arg - `CurrencyValue`
    * @returns {BigNumber}
    */
   $: (arg: string): BigNumber => new BigNumber(C.isNumber(arg) ? arg : arg ? arg.replace(',', '.').replace(/[^0-9.\-]/g, '') : 0),
-  times: (multiplier, amount) =>
+  /**
+   * Multiplies given `CurrencyValue` with given multiplier
+   * @param {string} multiplier - value to multiply with
+   * @param {string} amount - `CurrencyValue`
+   * @returns {string}
+   */
+  times: (multiplier: string, amount: string): string =>
     `${C.$(amount)
       .times(C.$(multiplier))
       .toFixed(2)} ${C.$c(amount)}`.trim(),
   times_: (multiplier) => (amount) => C.times(multiplier, amount),
-  sum: (currencyAmount1, currencyAmount2) => {
+  /**
+   * Sums given `CurrencyValue`'s in same currency
+   * @param {string} currencyAmount1 - `CurrencyValue`
+   * @param {string} currencyAmount2 - `CurrencyValue`
+   * @returns {string}
+   */
+  sum: (currencyAmount1: string, currencyAmount2: string): string => {
     const c1 = C.$c(currencyAmount1)
     const c2 = C.$c(currencyAmount2)
     const c = c1 === c2 ? c1 : undefined
@@ -60,7 +74,13 @@ const C = {
     )
   },
   sum_: (currencyAmount1) => (currencyAmount2) => C.sum(currencyAmount1, currencyAmount2),
-  subtract: (currencyAmount1, currencyAmount2) => {
+  /**
+   * Subtracts given `CurrencyValue`'s in same currency
+   * @param {string} currencyAmount1 - `CurrencyValue`
+   * @param {string} currencyAmount2 - `CurrencyValue`
+   * @returns {string}
+   */
+  subtract: (currencyAmount1: string, currencyAmount2: string): string => {
     const c1 = C.$c(currencyAmount1)
     const c2 = C.$c(currencyAmount2)
     const c = c1 === c2 ? c1 : undefined
