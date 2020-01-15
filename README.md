@@ -16,3 +16,7 @@ or
 ```
 yarn add @currency-one/currency-toolkit
 ```
+
+## Documentation
+
+See [documentation](DOCS.md) for more details

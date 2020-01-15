@@ -1,15 +1,48 @@
 import BigNumber from 'bignumber.js'
 
+/**
+ * Currency Toolkit
+ */
 const C = {
-  isNumber: (n) => Object.prototype.toString.call(n) === '[object Number]',
-  tryParse: (str) => (!str || isNaN(str) ? undefined : C.$(str)),
-  $c: (amount) => {
+  /**
+   * Tries to parse given value into BigNumber. If fails, returns undefined.
+   * @param {any} value - value to parse.
+   * @returns {BigNumber | undefined}
+   */
+  tryParse: (value: any): BigNumber | undefined => (!value || isNaN(value) ? undefined : C.$(value)),
+  /**
+   * Checks if given value is Number.
+   * @param {any} value - value to check.
+   * @returns {boolean}
+   */
+  isNumber: (value: any): boolean => Object.prototype.toString.call(value) === '[object Number]',
+  /**
+   * Returns currency from given value. If no value, returns empty string.
+   * @param {string} amount - value in format `100.00 PLN`.
+   * @returns {string}
+   */
+  $c: (amount: string): string => {
     const i = amount ? amount.lastIndexOf(' ') : -1
     return i < 0 ? '' : amount.substr(i + 1)
   },
-  format00: (amount): string => `${C.$(amount).toFixed(2)} ${C.$c(amount)}`.trim(),
-  value00: (amount): string => C.$(amount).toFixed(2),
-  $: (arg) => new BigNumber(C.isNumber(arg) ? arg : arg ? arg.replace(',', '.').replace(/[^0-9.\-]/g, '') : 0),
+  /**
+   * Formats given value into this format `100.00 PLN`
+   * @param {string} amount - value in format `100 PLN`.
+   * @returns {string}
+   */
+  format00: (amount: string): string => `${C.$(amount).toFixed(2)} ${C.$c(amount)}`.trim(),
+  /**
+   * Formats given value into this format `100.00`
+   * @param {string} amount - value in format `100 PLN`.
+   * @returns {string}
+   */
+  value00: (amount: string): string => C.$(amount).toFixed(2),
+  /**
+   * Returns BigNumber object from given value
+   * @param {string} arg - value in format `100 PLN`.
+   * @returns {BigNumber}
+   */
+  $: (arg: string): BigNumber => new BigNumber(C.isNumber(arg) ? arg : arg ? arg.replace(',', '.').replace(/[^0-9.\-]/g, '') : 0),
   times: (multiplier, amount) =>
     `${C.$(amount)
       .times(C.$(multiplier))
