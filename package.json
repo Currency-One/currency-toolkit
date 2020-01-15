@@ -1,0 +1,67 @@
+{
+  "name": "@currency-one/currency-toolkit",
+  "version": "0.0.1",
+  "description": "Currency Toolkit",
+  "keywords": [
+    "currency-toolkit",
+    "currency",
+    "toolkit",
+    "utils"
+  ],
+  "homepage": "https://github.com/Currency-One/currency-toolkit",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Currency-One/currency-toolkit.git"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "all": "npm install && npm run lint && npm run test && npm run build && npm run build:doc",
+    "build": "npm run clean && npm run tsc",
+    "tsc": "tsc",
+    "lint": "tslint -p . -t codeFrame",
+    "test": "jest --coverage",
+    "clean": "rimraf ./dist",
+    "fix": "npm run lint --fix",
+    "publish-package": "npm run all && npm version patch && npm publish --access public",
+    "build:doc": "jsdoc2md --files ./lib/*.ts --configure ./jsdoc2md.json > ./DOCS.md"
+  },
+  "dependencies": {
+    "bignumber.js": "^9.0.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.7.7",
+    "@babel/core": "^7.7.7",
+    "@babel/preset-env": "^7.7.7",
+    "@babel/preset-typescript": "^7.7.7",
+    "@types/jest": "^24.0.25",
+    "jest": "^24.9.0",
+    "jsdoc-babel": "^0.5.0",
+    "jsdoc-to-markdown": "^5.0.3",
+    "rimraf": "^3.0.0",
+    "ts-jest": "^24.2.0",
+    "tslint": "^5.20.1",
+    "typescript": "^3.7.4"
+  },
+  "author": "Damian Majsner <d.majsner@gmail.com>",
+  "license": "MIT",
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "jsdom",
+    "testMatch": [
+      "**/__tests__/**/*.+(ts|tsx|js)",
+      "**/?(*.)+(spec|test).+(ts|tsx|js)"
+    ],
+    "collectCoverageFrom": [
+      "lib/**/*.{ts,tsx}",
+      "!**/node_modules/**"
+    ]
+  },
+  "bugs": {
+    "url": "https://github.com/Currency-One/currency-toolkit/issues"
+  },
+  "directories": {
+    "lib": "lib",
+    "test": "test"
+  }
+}

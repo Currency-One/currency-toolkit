@@ -1,1 +1,1 @@
-# currency-toolkit
+# Currency Toolkit
