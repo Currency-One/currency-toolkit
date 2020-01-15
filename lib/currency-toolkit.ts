@@ -3,24 +3,24 @@ import BigNumber from 'bignumber.js'
 /**
  * Currency Toolkit
  *
- * `CurrencyValue` - value in format like `100 PLN`, `123.45 EUR`
+ * `CurrencyAmount` - value in format like `100 PLN`, `123.45 EUR`
  */
 const C = {
   /**
-   * Tries to parse given value into BigNumber. If fails, returns undefined.
+   * Tries to parse given value into `BigNumber`. If fails, returns `undefined`.
    * @param {any} value - value to parse
    * @returns {BigNumber | undefined}
    */
   tryParse: (value: any): BigNumber | undefined => (!value || isNaN(value) ? undefined : C.$(value)),
   /**
-   * Checks if given value is Number.
+   * Returns `true` if given value is `Number`.
    * @param {any} value - value to check
    * @returns {boolean}
    */
   isNumber: (value: any): boolean => Object.prototype.toString.call(value) === '[object Number]',
   /**
-   * Returns currency from given `CurrencyValue`. If no value, returns empty string.
-   * @param {string} amount - `CurrencyValue`
+   * Returns currency from given `CurrencyAmount`. If no value, returns empty string.
+   * @param {string} amount - `CurrencyAmount`
    * @returns {string}
    */
   $c: (amount: string): string => {
@@ -28,38 +28,44 @@ const C = {
     return i < 0 ? '' : amount.substr(i + 1)
   },
   /**
-   * Formats given `CurrencyValue` into this format `100.00 PLN`
-   * @param {string} amount - `CurrencyValue`
+   * Returns given `CurrencyAmount` in this format `100.00 PLN`
+   * @param {string} amount - `CurrencyAmount`
    * @returns {string}
    */
   format00: (amount: string): string => `${C.$(amount).toFixed(2)} ${C.$c(amount)}`.trim(),
   /**
-   * Formats given `CurrencyValue` into this format `100.00`
-   * @param {string} amount - `CurrencyValue`
+   * Returns given `CurrencyAmount` in this format `100.00`
+   * @param {string} amount - `CurrencyAmount`
    * @returns {string}
    */
   value00: (amount: string): string => C.$(amount).toFixed(2),
   /**
-   * Returns BigNumber object from given `CurrencyValue`
-   * @param {string} arg - `CurrencyValue`
+   * Returns `BigNumber` object from given `CurrencyAmount`
+   * @param {string} arg - `CurrencyAmount`
    * @returns {BigNumber}
    */
   $: (arg: string): BigNumber => new BigNumber(C.isNumber(arg) ? arg : arg ? arg.replace(',', '.').replace(/[^0-9.\-]/g, '') : 0),
   /**
-   * Multiplies given `CurrencyValue` with given multiplier
+   * Multiplies given `CurrencyAmount` with given multiplier
    * @param {string} multiplier - value to multiply with
-   * @param {string} amount - `CurrencyValue`
+   * @param {string} amount - `CurrencyAmount`
    * @returns {string}
    */
   times: (multiplier: string, amount: string): string =>
     `${C.$(amount)
       .times(C.$(multiplier))
       .toFixed(2)} ${C.$c(amount)}`.trim(),
-  times_: (multiplier) => (amount) => C.times(multiplier, amount),
   /**
-   * Sums given `CurrencyValue`'s in same currency
-   * @param {string} currencyAmount1 - `CurrencyValue`
-   * @param {string} currencyAmount2 - `CurrencyValue`
+   * Multiplies given `CurrencyAmount` with given multiplier
+   * @param {string} multiplier - value to multiply with
+   * @param {string} amount - `CurrencyAmount`
+   * @returns {string}
+   */
+  times_: (multiplier: string) => (amount: string): string => C.times(multiplier, amount),
+  /**
+   * Sums given `CurrencyAmount`'s in same currency
+   * @param {string} currencyAmount1 - `CurrencyAmount`
+   * @param {string} currencyAmount2 - `CurrencyAmount`
    * @returns {string}
    */
   sum: (currencyAmount1: string, currencyAmount2: string): string => {
@@ -75,9 +81,9 @@ const C = {
   },
   sum_: (currencyAmount1) => (currencyAmount2) => C.sum(currencyAmount1, currencyAmount2),
   /**
-   * Subtracts given `CurrencyValue`'s in same currency
-   * @param {string} currencyAmount1 - `CurrencyValue`
-   * @param {string} currencyAmount2 - `CurrencyValue`
+   * Subtracts given `CurrencyAmount`'s in same currency
+   * @param {string} currencyAmount1 - `CurrencyAmount`
+   * @param {string} currencyAmount2 - `CurrencyAmount`
    * @returns {string}
    */
   subtract: (currencyAmount1: string, currencyAmount2: string): string => {
@@ -91,27 +97,95 @@ const C = {
         .toFixed(2)} ${c}`
     )
   },
-  abs: (amount) =>
+  /**
+   * Returns absolute value of given `CurrencyAmount`
+   * @param {string} amount - `CurrencyAmount`
+   * @returns {string}
+   */
+  abs: (amount: string): string =>
     `${C.$(amount)
       .abs()
       .toFixed(2)} ${C.$c(amount)}`,
-  zero: (amount) => {
+  /**
+   * Returns zero value `CurrencyAmount` in given currency. If no currency in `CurrencyAmount` returns zero string.
+   * @param {string} amount - `CurrencyAmount`
+   * @returns {string}
+   */
+  zero: (amount: string): string => {
     const c = C.$c(amount)
     return c ? `0 ${c}` : '0' // or maybe should we preserve a decimal point?
   },
+  /**
+   * Returns `true` if value of `amount1` is greater than value of `amount2`.
+   * If values are with different currencies, returns `undefined`.
+   * @param {string} amount1 - `CurrencyAmount`
+   * @param {string} amount2 - `CurrencyAmount`
+   * @returns {boolean | undefined}
+   */
   gt: (amount1: string, amount2: string): boolean | undefined =>
     C.$c(amount1) !== C.$c(amount2) ? undefined : C.$(amount1).gt(C.$(amount2)),
+  /**
+   * Returns `true` if value of `amount1` is greater or equal value of `amount2`.
+   * If values are with different currencies, returns `undefined`.
+   * @param {string} amount1 - `CurrencyAmount`
+   * @param {string} amount2 - `CurrencyAmount`
+   * @returns {boolean | undefined}
+   */
   gte: (amount1: string, amount2: string): boolean | undefined =>
     C.$c(amount1) !== C.$c(amount2) ? undefined : C.$(amount1).gte(C.$(amount2)),
+  /**
+   * Returns `true` if value of `amount1` is less than value of `amount2`.
+   * If values are with different currencies, returns `undefined`.
+   * @param {string} amount1 - `CurrencyAmount`
+   * @param {string} amount2 - `CurrencyAmount`
+   * @returns {boolean | undefined}
+   */
   lt: (amount1: string, amount2: string): boolean | undefined =>
     C.$c(amount1) !== C.$c(amount2) ? undefined : C.$(amount1).lt(C.$(amount2)),
+  /**
+   * Returns `true` if value of `amount1` is less or equal value of `amount2`.
+   * If values are with different currencies, returns `undefined`.
+   * @param {string} amount1 - `CurrencyAmount`
+   * @param {string} amount2 - `CurrencyAmount`
+   * @returns {boolean | undefined}
+   */
   lte: (amount1: string, amount2: string): boolean | undefined =>
     C.$c(amount1) !== C.$c(amount2) ? undefined : C.$(amount1).lte(C.$(amount2)),
+  /**
+   * Returns `true` if value of `amount1` is equal to value of `amount2`.
+   * If values are with different currencies, returns `undefined`.
+   * @param {string} amount1 - `CurrencyAmount`
+   * @param {string} amount2 - `CurrencyAmount`
+   * @returns {boolean | undefined}
+   */
   eq: (amount1: string, amount2: string): boolean | undefined =>
     C.$c(amount1) !== C.$c(amount2) ? undefined : C.$(amount1).eq(C.$(amount2)),
+  /**
+   * Returns `true` if value of `amount` is greater than zero.
+   * @param {string} amount - `CurrencyAmount`
+   * @returns {boolean}
+   */
   gt0: (amount: string): boolean => C.$(amount).gt(0),
-  compare: (amount1, amount2) => (C.$c(amount1) !== C.$c(amount2) ? undefined : C.$(amount1).comparedTo(C.$(amount2))),
-  max: (amount1, amount2) =>
+  /**
+   * Compares given `CurrencyAmount`'s.
+   * Returns `1` if the value of `amount1` is greater than the value of `amount2`
+   * Returns `0` if the value of `amount1` is the same as value of `amount2`
+   * Returns `1` if the value of `amount1` is less than the value of `amount2`
+   * If values are with different currencies, returns `undefined`.
+   * @param {string} amount1 - `CurrencyAmount`
+   * @param {string} amount2 - `CurrencyAmount`
+   * @returns {number | undefined}
+   */
+  compare: (amount1: string, amount2: string): number | undefined =>
+    (C.$c(amount1) !== C.$c(amount2) ? undefined : C.$(amount1).comparedTo(C.$(amount2))),
+  /**
+   * Returns `CurrencyAmount` whose value is the maximum of the arguments.
+   * If values are with different currencies, returns `undefined`.
+   * @param {string} amount1 - `CurrencyAmount`
+   * @param {string} amount2 - `CurrencyAmount`
+   * @returns {string | undefined}
+   */
+  max: (amount1: string, amount2: string): string | undefined =>
     !amount1
       ? amount2
       : !amount2
@@ -121,8 +195,22 @@ const C = {
         : C.$(amount1).gt(C.$(amount2))
           ? amount1
           : amount2,
-  max_: (amount1) => (amount2) => C.max(amount1, amount2),
-  min: (amount1, amount2) =>
+  /**
+   * Returns `CurrencyAmount` whose value is the maximum of the arguments.
+   * If values are with different currencies, returns `undefined`.
+   * @param {string} amount1 - `CurrencyAmount`
+   * @param {string} amount2 - `CurrencyAmount`
+   * @returns {string | undefined}
+   */
+  max_: (amount1: string) => (amount2: string): string | undefined => C.max(amount1, amount2),
+  /**
+   * Returns `CurrencyAmount` whose value is the minimum of the arguments.
+   * If values are with different currencies, returns `undefined`.
+   * @param {string} amount1 - `CurrencyAmount`
+   * @param {string} amount2 - `CurrencyAmount`
+   * @returns {string | undefined}
+   */
+  min: (amount1: string, amount2: string): string | undefined =>
     !amount1
       ? amount2
       : !amount2
@@ -132,7 +220,14 @@ const C = {
         : C.$(amount1).gt(C.$(amount2))
           ? amount2
           : amount1,
-  min_: (amount1) => (amount2) => C.min(amount1, amount2),
+  /**
+   * Returns `CurrencyAmount` whose value is the minimum of the arguments.
+   * If values are with different currencies, returns `undefined`.
+   * @param {string} amount1 - `CurrencyAmount`
+   * @param {string} amount2 - `CurrencyAmount`
+   * @returns {string | undefined}
+   */
+  min_: (amount1: string) => (amount2: string): string | undefined => C.min(amount1, amount2),
   HALF_UP: BigNumber.ROUND_HALF_UP,
 }
 
