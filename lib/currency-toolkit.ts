@@ -28,11 +28,29 @@ const C = {
     return i < 0 ? '' : amount.substr(i + 1)
   },
   /**
+   * Returns amount from given `CurrencyAmount`. If no value, returns empty string.
+   * @param {string} amount - `CurrencyAmount`
+   * @returns {string}
+   */
+  $a: (amount: string): string => {
+    const i = amount ? amount.lastIndexOf(' ') : -1
+    return i < 0 ? '' : amount.substr(0, i)
+  },
+  /**
    * Returns given `CurrencyAmount` in this format `100.00 PLN`
    * @param {string} amount - `CurrencyAmount`
    * @returns {string}
    */
   format00: (amount: string): string => `${C.$(amount).toFixed(2)} ${C.$c(amount)}`.trim(),
+  /**
+   * Returns given `CurrencyAmount` in this format `100,00 PLN`
+   * @param {string} amount - `CurrencyAmount`
+   * @returns {string}
+   */
+  currencyFormat00: (amount: string): string =>
+    `${C.$(amount)
+      .toFixed(2)
+      .replace('.', ',')} ${C.$c(amount)}`.trim(),
   /**
    * Returns given `CurrencyAmount` in this format `100.00`
    * @param {string} amount - `CurrencyAmount`
@@ -160,6 +178,12 @@ const C = {
    */
   eq: (amount1: string, amount2: string): boolean | undefined =>
     C.$c(amount1) !== C.$c(amount2) ? undefined : C.$(amount1).eq(C.$(amount2)),
+  /**
+   * Returns `true` if value of `amount` is not equal zero`.
+   * @param {string} amount - `CurrencyAmount`
+   * @returns {boolean}
+   */
+  ne0: (amount: string): boolean => amount && !C.$(amount).eq(0),
   /**
    * Returns `true` if value of `amount` is greater than zero.
    * @param {string} amount - `CurrencyAmount`

@@ -17,6 +17,14 @@ describe('Currency toolkit', () => {
     expect(C.format00('- 666 USD')).toEqual('-666.00 USD')
   })
 
+  it('should currency format00 amounts', () => {
+    expect(C.currencyFormat00('1')).toEqual('1,00')
+    expect(C.currencyFormat00('-1')).toEqual('-1,00')
+    expect(C.currencyFormat00('1 USD')).toEqual('1,00 USD')
+    expect(C.currencyFormat00('-1 USD')).toEqual('-1,00 USD')
+    expect(C.currencyFormat00('- 666 USD')).toEqual('-666,00 USD')
+  })
+
   it('should sum amount strings', () => {
     const sum = C.sum_('124.56 EUR')
     expect(C.sum('130.97 EUR', '204.05 EUR')).toEqual('335.02 EUR')
@@ -29,11 +37,18 @@ describe('Currency toolkit', () => {
     expect(C.subtract('100.00 EUR', '-200.00 EUR')).toEqual('300.00 EUR')
   })
 
-  it('should currency of amount string', () => {
+  it('should return currency of amount string', () => {
     expect(C.$c('123 CHF')).toEqual('CHF')
     expect(C.$c(' - 123 CHF')).toEqual('CHF')
     expect(C.$c('123.3')).toEqual('')
     expect(C.$c('')).toEqual('')
+  })
+
+  it('should return amount of currency amount string', () => {
+    expect(C.$a('123 CHF')).toEqual('123')
+    expect(C.$a(' - 123 CHF')).toEqual(' - 123')
+    expect(C.$a('123.3')).toEqual('')
+    expect(C.$a('')).toEqual('')
   })
 
   it('should return absolute payout amount', () => {
@@ -70,6 +85,13 @@ describe('Currency toolkit', () => {
     expect(C.gt0('10')).toBeTruthy()
     expect(C.gt0('0 USD')).toBeFalsy()
     expect(C.gt0('0')).toBeFalsy()
+  })
+
+  it('should check if amount is greater than 0', () => {
+    expect(C.ne0('10 USD')).toBeTruthy()
+    expect(C.ne0('10')).toBeTruthy()
+    expect(C.ne0('0 USD')).toBeFalsy()
+    expect(C.ne0('0')).toBeFalsy()
   })
 
   it('should return max of two values', () => {
