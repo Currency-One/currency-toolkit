@@ -10,7 +10,9 @@
     * [.tryParse(value)](#C.tryParse) ⇒ <code>BigNumber</code> \| <code>undefined</code>
     * [.isNumber(value)](#C.isNumber) ⇒ <code>boolean</code>
     * [.$c(amount)](#C.$c) ⇒ <code>string</code>
+    * [.$a(amount)](#C.$a) ⇒ <code>string</code>
     * [.format00(amount)](#C.format00) ⇒ <code>string</code>
+    * [.currencyFormat00(amount)](#C.currencyFormat00) ⇒ <code>string</code>
     * [.value00(amount)](#C.value00) ⇒ <code>string</code>
     * [.$(arg)](#C.$) ⇒ <code>BigNumber</code>
     * [.times(multiplier, amount)](#C.times) ⇒ <code>string</code>
@@ -24,6 +26,7 @@
     * [.lt(amount1, amount2)](#C.lt) ⇒ <code>boolean</code> \| <code>undefined</code>
     * [.lte(amount1, amount2)](#C.lte) ⇒ <code>boolean</code> \| <code>undefined</code>
     * [.eq(amount1, amount2)](#C.eq) ⇒ <code>boolean</code> \| <code>undefined</code>
+    * [.ne0(amount)](#C.ne0) ⇒ <code>boolean</code>
     * [.gt0(amount)](#C.gt0) ⇒ <code>boolean</code>
     * [.compare(amount1, amount2)](#C.compare) ⇒ <code>number</code> \| <code>undefined</code>
     * [.max(amount1, amount2)](#C.max) ⇒ <code>string</code> \| <code>undefined</code>
@@ -64,10 +67,32 @@
 | --- | --- | --- |
 | amount | <code>string</code> | <p><code>CurrencyAmount</code></p> |
 
+<a name="C.$a"></a>
+
+### C.$a(amount) ⇒ <code>string</code>
+<p>Returns amount from given <code>CurrencyAmount</code>. If no value, returns empty string.</p>
+
+**Kind**: static method of [<code>C</code>](#C)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| amount | <code>string</code> | <p><code>CurrencyAmount</code></p> |
+
 <a name="C.format00"></a>
 
 ### C.format00(amount) ⇒ <code>string</code>
 <p>Returns given <code>CurrencyAmount</code> in this format <code>100.00 PLN</code></p>
+
+**Kind**: static method of [<code>C</code>](#C)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| amount | <code>string</code> | <p><code>CurrencyAmount</code></p> |
+
+<a name="C.currencyFormat00"></a>
+
+### C.currencyFormat00(amount) ⇒ <code>string</code>
+<p>Returns given <code>CurrencyAmount</code> in this format <code>100,00 PLN</code></p>
 
 **Kind**: static method of [<code>C</code>](#C)  
 
@@ -231,6 +256,17 @@ If values are with different currencies, returns <code>undefined</code>.</p>
 | --- | --- | --- |
 | amount1 | <code>string</code> | <p><code>CurrencyAmount</code></p> |
 | amount2 | <code>string</code> | <p><code>CurrencyAmount</code></p> |
+
+<a name="C.ne0"></a>
+
+### C.ne0(amount) ⇒ <code>boolean</code>
+<p>Returns <code>true</code> if value of <code>amount</code> is not equal zero`.</p>
+
+**Kind**: static method of [<code>C</code>](#C)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| amount | <code>string</code> | <p><code>CurrencyAmount</code></p> |
 
 <a name="C.gt0"></a>
 
